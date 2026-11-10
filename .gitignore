@@ -6,3 +6,4 @@ coverage/
 .openai/
 test-results/
 playwright-report/
+*.tsbuildinfo
