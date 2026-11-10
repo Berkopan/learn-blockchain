@@ -1,0 +1,19 @@
+import type { Frame, Language, Status, VisualNode } from '../types';
+export const palette:Record<Status,string>={idle:'#a59bcc',active:'#ef794c',success:'#329d83',warning:'#d5a142',error:'#d86270',muted:'#c9c7d0'};
+interface Props{frame:Frame;mini?:boolean;language?:Language;selected?:string|null;onSelect?:(id:string)=>void}
+/** An exact isometric projection of the current simulation state. */
+export function Projection({frame,mini=false,language='en',selected,onSelect}:Props){
+ const points=frame.nodes.map(n=>({node:n,x:(n.position[0]-n.position[2])*28,y:(n.position[0]+n.position[2])*12-n.position[1]*30}));
+ const minX=Math.min(-70,...points.map(p=>p.x))-40,maxX=Math.max(70,...points.map(p=>p.x))+40,minY=Math.min(-45,...points.map(p=>p.y))-40,maxY=Math.max(45,...points.map(p=>p.y))+(mini?32:55);
+ const width=maxX-minX,height=maxY-minY,byId=new Map(points.map(p=>[p.node.id,p]));
+ const symbol=(n:VisualNode)=>n.status==='success'?'✓':n.status==='error'?'×':n.status==='warning'?'!':'';
+ return <svg className={mini?'scene-projection mini':'scene-projection'} viewBox={[minX,minY,width,height].join(' ')} role={mini?'presentation':onSelect?'group':'img'} aria-hidden={mini||undefined} aria-label={mini?undefined:frame.title[language]}>
+ <g fill="none" stroke="#ded9e9" strokeWidth=".7" opacity=".65">{Array.from({length:11},(_,i)=><path key={i} d={'M '+minX+' '+(minY+i*height/10)+' L '+maxX+' '+(minY+i*height/10)}/>)}</g>
+ {frame.links.map((link,i)=>{const a=byId.get(link.from),b=byId.get(link.to);if(!a||!b)return null;const color=palette[link.status||'idle'],mx=(a.x+b.x)/2,my=(a.y+b.y)/2,angle=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;
+ return <g key={link.from+'-'+link.to+'-'+i}><path d={'M'+a.x+','+a.y+' L'+b.x+','+b.y} stroke={color} strokeWidth={link.status==='active'?2.3:1.2} strokeDasharray={link.status==='error'?'4 4':undefined} fill="none"/>{link.directed!==false&&<path d="M-4,-3 L2,0 L-4,3" stroke={color} fill="none" strokeWidth="1.4" transform={'translate('+mx+','+my+') rotate('+angle+')'}/>}
+ {!mini&&link.label&&<text x={mx} y={my-9} fontSize="8" textAnchor="middle" fill="#766b86" paintOrder="stroke" stroke="#f0edf5" strokeWidth="3">{link.label}</text>}</g>;})}
+ {points.sort((a,b)=>a.y-b.y).map(({node:n,x,y})=>{const color=palette[n.status||'idle'],s=(n.scale||1)*(mini?.9:1);return <g key={n.id} transform={'translate('+x+','+y+')'} tabIndex={!mini&&onSelect?0:undefined} role={!mini&&onSelect?'button':undefined} aria-label={!mini?n.label+(n.value?': '+n.value:''):undefined} onClick={()=>onSelect?.(n.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();onSelect?.(n.id);}}} className={onSelect&&!mini?'projected-object':undefined}>
+ <ellipse cy="13" rx={20*s} ry={7*s} fill="#403057" opacity=".06"/>{selected===n.id&&<ellipse cy="11" rx={26*s} ry={11*s} stroke="#22212a" strokeWidth="1.5" strokeDasharray="3 3" fill="none"/>}
+ <g transform={'scale('+s+')'}>{n.kind==='token'||n.kind==='clock'?<><circle r="12" cy="-5" fill={color}/><circle r="8.5" cy="-5" fill="#fff" opacity=".7"/>{n.kind==='clock'&&<path d="M0,-11 V-5 L5,-2" fill="none" stroke="#34323f" strokeWidth="1.5"/>}</>:<><path d="M-16,-8 L0,0 L16,-8 L16,10 L0,18 L-16,10 Z" fill={color}/><path d="M0,0 L16,-8 L16,10 L0,18 Z" fill="#211b39" opacity=".16"/><path d="M-16,-8 L0,-16 L16,-8 L0,0 Z" fill={color}/><path d="M-16,-8 L0,-16 L16,-8 L0,0 Z" fill="#fff" opacity=".45"/><path d="M-11,-7 L-2,-3 M-11,-2 L-2,2 M-11,3 L-2,7" stroke="white" strokeOpacity=".65" strokeWidth="1.5"/></>}{symbol(n)&&<text y="-3" fontSize="10" textAnchor="middle" fontWeight="800" fill="#30303c">{symbol(n)}</text>}</g>
+ {!mini&&<><text y={33*s} textAnchor="middle" fill="#302a3d" fontSize="10" fontWeight="700">{n.label}</text>{n.value&&<text y={46*s} textAnchor="middle" fill="#686174" fontSize="8.5">{n.value}</text>}</>}</g>;})}</svg>;
+}
