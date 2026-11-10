@@ -77,7 +77,7 @@ export default function SoftwareScene(props:Props){
    const current=new Set(state.frame.nodes.map(n=>n.id));for(const id of positions.keys())if(!current.has(id))positions.delete(id);
    for(const n of state.frame.nodes){const old=positions.get(n.id)||[...n.position] as Position;const amount=state.reducedMotion?1:1-Math.exp(-dt*12);positions.set(n.id,old.map((v,i)=>v+(n.position[i]-v)*amount) as Position);}
    const bounds=Math.max(3.8,...state.frame.nodes.map(n=>Math.hypot(n.position[0],n.position[2])+Math.abs(n.position[1])*.55+1));
-   const targetScale=Math.min(width/(bounds*2.1),height/(bounds*1.55));scale+=(targetScale-scale)*.17;
+   const targetScale=Math.min(width/(bounds*2.1),height/(bounds*1.55));scale=state.reducedMotion?targetScale:scale+(targetScale-scale)*.17;
    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,height);
    for(let i=-10;i<=10;i++){line([i,-.68,-10],[i,-.68,10],'rgba(156,143,174,.12)',.65);line([-10,-.68,i],[10,-.68,i],'rgba(156,143,174,.12)',.65);}
    state.frame.links.forEach(drawLink);hits=[];
@@ -89,5 +89,5 @@ export default function SoftwareScene(props:Props){
   canvas.addEventListener('pointerdown',down);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);raf=requestAnimationFrame(draw);
   return()=>{cancelAnimationFrame(raf);resizeObserver.disconnect();intersection.disconnect();canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',up);canvas.removeEventListener('pointercancel',up);};
  },[]);
- return <canvas ref={canvasRef} className="software-stage" role="img" aria-label={props.language==='tr'?'Döndürülebilir 3D sahne. Nesneler alttaki listeden de incelenebilir.':'Orbitable 3D scene. Objects can also be inspected in the list below.'}/>;
+ return <canvas ref={canvasRef} className="software-stage" role="img" aria-label={props.language==='tr'?'Döndürülebilir 3D sahne.'+(props.onSelect?' Nesneler alttaki listeden de incelenebilir.':''):'Orbitable 3D scene.'+(props.onSelect?' Objects can also be inspected in the list below.':'')}/>;
 }

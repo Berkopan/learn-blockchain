@@ -44,3 +44,25 @@
  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
  .reduced-motion *,.reduced-motion *::before,.reduced-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* Keep teaching controls and state labels readable at narrow viewports. */
+@layer responsive {
+ .scene-legend>span{font-size:10px}.scene-legend{gap:10px}.scene-legend i{width:11px;height:11px;font-size:9px}
+ .step-rail{overflow-x:auto;scrollbar-width:thin}.step-rail button{min-width:74px}.step-rail small{font-size:10px;line-height:1.5}
+ .object-list summary{font-size:12px}.object-list summary>span{font-size:10px}.scene-hint{font-size:9px;bottom:54px}
+ .experiment-control>label{font-size:12px}.control-description{font-size:11px}.lab-source-actions .quiet-button{font-size:11px}
+ .mode-tabs button{font-size:12px}.frame-note summary{font-size:11px}.frame-note p{font-size:12px}
+ .card-body>p{font-size:12px;line-height:1.7}.lesson-meta{font-size:10px}.card-category{font-size:9px}
+ @media(max-width:720px){
+  .scene-legend{bottom:15px;left:17px;right:17px;gap:6px 12px}.scene-legend>span{font-size:10px}
+  .scene-hint{bottom:62px;font-size:9px}.step-rail{gap:10px}.step-rail button{min-width:84px}.step-rail small{font-size:11px}
+  .card-body>p{font-size:11px;min-height:55px}.lesson-meta{font-size:9px}.card-category{font-size:8px}
+  .lab-source-actions .quiet-button{font-size:10px}.mode-tabs button{font-size:11px}
+  .lab-heading-meta .lesson-meta{font-size:9px}.object-list summary>span{font-size:10px}
+ }
+ @media(max-width:380px){
+  .scene-legend{left:13px;right:13px;gap:5px 10px}.scene-legend>span{font-size:9px}
+  .scene-legend i{width:10px;height:10px}.scene-hint{font-size:8px}.card-body>p{font-size:11px}
+  .lesson-meta{font-size:9px}.card-category{font-size:8px}.lab-source-actions .quiet-button{font-size:10px}
+ }
+}

@@ -15,10 +15,16 @@ function release(root:THREE.Object3D){
  root.traverse(object=>{const mesh=object as THREE.Mesh;mesh.geometry?.dispose();const list=Array.isArray(mesh.material)?mesh.material:[mesh.material];for(const material of list){if(!material)continue;(material as THREE.MeshStandardMaterial).map?.dispose();material.dispose();}});
 }
 function label(text:string,value?:string):THREE.Sprite{
- const canvas=document.createElement('canvas');canvas.width=480;canvas.height=value?126:82;const c=canvas.getContext('2d')!;
- c.fillStyle='rgba(255,255,255,.95)';c.beginPath();c.roundRect(5,5,470,canvas.height-10,17);c.fill();c.textAlign='center';c.textBaseline='middle';c.font='600 34px "Manrope Variable", sans-serif';c.fillStyle='#50465b';c.fillText(trim(text,27),240,value?43:42,445);
- if(value){c.font='500 27px "Manrope Variable", sans-serif';c.fillStyle='#7a6b86';c.fillText(trim(value,30),240,89,440);}
- const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,transparent:true,depthTest:false}));sprite.scale.set(2.3,value ? .60 : .39,1);sprite.renderOrder=5;return sprite;
+ const canvas=document.createElement('canvas'),c=canvas.getContext('2d')!,title=trim(text,18),detail=value?trim(value,20):undefined;
+ c.font='600 24px "Manrope Variable", sans-serif';const titleWidth=c.measureText(title).width;
+ c.font='500 22px "Manrope Variable", sans-serif';const detailWidth=detail?c.measureText(detail).width:0;
+ canvas.width=Math.ceil(Math.min(300,Math.max(66,titleWidth+24,detailWidth+24)));canvas.height=detail?78:46;
+ c.fillStyle='rgba(255,255,255,.95)';c.beginPath();c.roundRect(2,2,canvas.width-4,canvas.height-4,10);c.fill();c.textAlign='center';c.textBaseline='middle';
+ c.font='600 24px "Manrope Variable", sans-serif';c.fillStyle='#50465b';c.fillText(title,canvas.width/2,24,canvas.width-20);
+ if(detail){c.font='500 22px "Manrope Variable", sans-serif';c.fillStyle='#7a6b86';c.fillText(detail,canvas.width/2,57,canvas.width-20);}
+ const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
+ const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,transparent:true,depthTest:false}));
+ sprite.userData.pixelWidth=canvas.width/2;sprite.userData.pixelHeight=canvas.height/2;sprite.userData.sizeMultiplier=1;sprite.renderOrder=5;return sprite;
 }
 function objectFor(node:VisualNode):THREE.Group{
  const g=new THREE.Group();g.userData.nodeId=node.id;const color=palette[node.status||'idle'];
@@ -47,7 +53,7 @@ function objectFor(node:VisualNode):THREE.Group{
  }
  const name=label(node.label,node.value);name.position.y=kind==='node'?1.04:.86;g.add(name);
  if(node.status==='success'||node.status==='error'||node.status==='warning'){
-  const marker=label(node.status==='success'?'✓':node.status==='error'?'×':'!');marker.scale.set(.35,.28,1);marker.position.set(.43,.5,.05);g.add(marker);
+  const marker=label(node.status==='success'?'✓':node.status==='error'?'×':'!');marker.userData.pixelWidth=18;marker.userData.pixelHeight=18;marker.position.set(.5,.12,.1);g.add(marker);
  }
  const s=node.scale||1;g.scale.setScalar(s);g.position.fromArray(node.position);return g;
 }
@@ -73,7 +79,7 @@ export default function Scene(props:Props){
   const selection=new THREE.Mesh(new THREE.TorusGeometry(.64,.017,6,48),new THREE.MeshBasicMaterial({color:'#8a6aa3',transparent:true,opacity:.9}));selection.rotation.x=-Math.PI/2;selection.position.y=-.57;selection.visible=false;scene.add(selection);
   const objects=new Map<string,THREE.Group>(),targets=new Map<string,THREE.Vector3>();let packets:{mesh:THREE.Mesh;curve:THREE.QuadraticBezierCurve3;offset:number}[]=[];
   let elapsed=0,last=0,raf=0,visible=true,lost=false,bounds=5;
-  const resize=()=>{const r=mount.getBoundingClientRect(),w=Math.max(r.width,1),h=Math.max(r.height,1),aspect=w/h;renderer.setSize(w,h,false);const half=Math.max(live.current.hero?4.8:4.9,bounds*.73+1.3)/Math.min(aspect,1.3);camera.left=-half*aspect;camera.right=half*aspect;camera.top=half;camera.bottom=-half;camera.updateProjectionMatrix();};
+  const resize=()=>{const r=mount.getBoundingClientRect(),w=Math.max(r.width,1),h=Math.max(r.height,1),aspect=w/h;renderer.setSize(w,h,false);const half=Math.max(live.current.hero?4.8:4.9,bounds*.73+1.3)/Math.min(aspect,1.3);camera.left=-half*aspect;camera.right=half*aspect;camera.top=half;camera.bottom=-half;camera.updateProjectionMatrix();const worldPerPixel=(camera.top-camera.bottom)/h;scene.traverse(object=>{if(object instanceof THREE.Sprite&&object.userData.pixelWidth){const ratio=(object.userData.sizeMultiplier||1)*worldPerPixel/(object.parent?.scale.x||1);object.scale.set(object.userData.pixelWidth*ratio,object.userData.pixelHeight*ratio,1);}});};
   const update=(frame:Frame)=>{
    const old=new Map([...objects].map(([id,obj])=>[id,obj.position.clone()]));
    release(objectsLayer);objectsLayer.clear();release(linksLayer);linksLayer.clear();objects.clear();targets.clear();packets=[];
@@ -85,7 +91,7 @@ export default function Scene(props:Props){
     const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,24,link.status==='active'?.023:.014,5,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:link.status==='muted'?.18:.55}));linksLayer.add(tube);
     if(link.directed){const arrow=new THREE.Mesh(new THREE.ConeGeometry(.065,.16,7),new THREE.MeshBasicMaterial({color}));arrow.position.copy(curve.getPoint(.74));arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),curve.getTangent(.74));linksLayer.add(arrow);}
     if(link.status==='active'||link.status==='success'){const packet=new THREE.Mesh(new THREE.SphereGeometry(.07,10,8),new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:.35,roughness:.3}));packet.position.copy(curve.getPoint(.5));linksLayer.add(packet);packets.push({mesh:packet,curve,offset:i*.13});}
-    if(link.label&&i<8&&link.status!=='muted'){const caption=label(link.label);caption.scale.multiplyScalar(.63);caption.position.copy(curve.getPoint(.5));caption.position.y+=.2;linksLayer.add(caption);}
+    if(link.label&&i<8&&link.status!=='muted'){const caption=label(link.label);caption.userData.sizeMultiplier=.85;caption.position.copy(curve.getPoint(.5));caption.position.y+=.2;linksLayer.add(caption);}
    });
    bounds=Math.max(3.6,...frame.nodes.map(n=>Math.hypot(n.position[0],n.position[2])+Math.abs(n.position[1])*.3));resize();
   };
