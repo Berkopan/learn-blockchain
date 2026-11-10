@@ -67,3 +67,7 @@ Simülasyonlar, öğretmek için küçük tutulmuş modellerdir. Varsayımları 
 - [İleri konular araştırma notları](docs/research-advanced.md)
 
 Yeni bir ders eklerken iki dili, birincil kaynakları, sonucu değiştiren kontrolleri, modelin açık sınırlarını ve öğretilen mekanizmayı doğrulayan testleri birlikte ekle.
+
+## Lisans ve atıflar
+
+Block Atlas'ın özgün kaynak kodu [MIT lisansıyla](LICENSE) sunulur, © 2026 Berkopan. Kullanılan fontlar, ikonlar ve bağımlılıkların kendi lisansları geçerlidir. Ayrıntılar için [üçüncü taraf bildirimlerini](THIRD_PARTY_NOTICES.md) ve [siteyle dağıtılan tam lisans metinlerini](public/third-party-licenses.txt) inceleyebilirsin.

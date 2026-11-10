@@ -67,3 +67,7 @@ The simulations are deliberately small teaching models. Their assumptions are pa
 - [Advanced topics research notes](docs/research-advanced.md)
 
 When adding a lesson, include both languages, primary sources, effective controls, a precise model boundary, and tests for the mechanism being taught.
+
+## License and credits
+
+Block Atlas's original source code is [MIT licensed](LICENSE), © 2026 Berkopan. Bundled fonts, icon artwork and dependencies keep their own terms; see the [third-party notices](THIRD_PARTY_NOTICES.md) and the [full license texts included with the website](public/third-party-licenses.txt).
