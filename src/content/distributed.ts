@@ -2184,7 +2184,7 @@ export const distributedLessons: Lesson[] = [
           "tr": "Koordinatör karar kaydından önce çöksün"
         },
         "kind": "toggle",
-        "default": false
+        "default": true
       },
       {
         "id": "recover",
@@ -2193,7 +2193,7 @@ export const distributedLessons: Lesson[] = [
           "tr": "Koordinatör toparlansın"
         },
         "kind": "toggle",
-        "default": true
+        "default": false
       }
     ],
     "takeaway": {
