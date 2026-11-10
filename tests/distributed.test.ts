@@ -106,9 +106,11 @@ describe('Routing, placement and replica repair', () => {
       const result = chordRoute(key, start, members);
       expect(result.owner, JSON.stringify({ members, start, key })).toBe(chordSuccessor(key, members));
       expect(result.path[0]).toBe(start);
-      expect(new Set(result.path).size).toBe(result.path.length);
+      expect(new Set(result.path.slice(0, -1)).size).toBe(result.path.length - 1);
+      if (new Set(result.path).size < result.path.length) expect(result.path.at(-1)).toBe(start);
       expect(result.path.length).toBeLessThanOrEqual(members.length + 1);
     }
+    expect(chordRoute(13, 0, [0,4,8,12])).toEqual({ path: [0,8,12,0], owner: 0 });
   });
   it('Kademlia reaches the closest responsive peer for all targets and query widths', () => {
     for (let target = 0; target < 16; target++) for (let alpha = 1; alpha <= 3; alpha++) for (const failed of [false, true]) {

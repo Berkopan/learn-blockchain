@@ -28,7 +28,7 @@ export const advancedLessons: Lesson[] = [
     takeaway: bi('A preferred tip carries support for its ancestors.', 'Tercih edilen uç, ataları için de destek taşır.'),
     model: bi('A single fork and one validator, using repeated binary sampling with fixed peer tips. It isolates ancestor preference and local acceptance; networking, stake weights and full Snowman implementation are omitted. Avalanche’s historical transaction DAG is a different model.', 'Tek çatal ve tek doğrulayıcı; eşlerin uçları sabitken ikili örnekleme yapılır. Ata tercihi ve yerel kabul gösterilir; ağ, stake ağırlıkları ve tam Snowman uygulaması yoktur. Avalanche’ın tarihsel işlem DAG’ı ayrı bir modeldir.'),
     challenge: { question: bi('A peer prefers A2. Which parent does that support?', 'Bir eş A2’yi seçti. Bu hangi atayı destekler?'), options: [bi('A1', 'A1'), bi('B1', 'B1'), bi('Neither', 'Hiçbirini')], correct: 0, explanation: bi('A2 extends A1, so the same branch preference supports A1.', 'A2, A1’i uzattığından aynı dal tercihi A1’i destekler.') },
-    sources: [snow, avax], related: ['snowball', 'fork-choice', 'proof-of-stake'],
+    sources: [snow, avax], related: ['snowball', 'lmd-ghost', 'proof-of-stake'],
   },
   {
     id: 'algorand', title: bi('Algorand sortition', 'Algorand kurası'), hook: bi('A committee chosen behind sealed doors.', 'Kapalı kapılar ardında seçilen bir komite.'),
@@ -37,7 +37,7 @@ export const advancedLessons: Lesson[] = [
     takeaway: bi('Selection is private, weighted and verifiable; it is not consensus by itself.', 'Seçim gizli, ağırlıklı ve doğrulanabilirdir; tek başına uzlaşma değildir.'),
     model: bi('Exact binomial inverse-CDF ticket selection for five validators. Reproducible pseudorandom values stand in for VRF outputs; cryptographic proofs and Algorand BA are not implemented. The committee weight is random, not fixed at its expectation.', 'Beş doğrulayıcıda tam binom ters dağılım hesabıyla bilet seçimi. VRF çıktıları yerine tekrarlanabilir sözde rastgele değerler kullanılır; kriptografik kanıtlar ve Algorand BA uygulanmaz. Komite ağırlığı beklenen değere sabitlenmez.'),
     challenge: { question: bi('Expected committee weight is 4. Must exactly 4 tickets win?', 'Beklenen komite ağırlığı 4. Tam 4 bilet mi kazanır?'), options: [bi('Always', 'Her zaman'), bi('No, 4 is the average', 'Hayır, 4 ortalamadır')], correct: 1, explanation: bi('Each stake unit is sampled with probability target / total stake.', 'Her stake birimi hedef / toplam stake olasılığıyla örneklenir.') },
-    sources: [source('Algorand: Scaling Byzantine Agreements — Gilad et al.', 'https://eprint.iacr.org/2017/454.pdf', 2017)], related: ['proof-of-stake', 'vrf', 'pbft'],
+    sources: [source('Algorand: Scaling Byzantine Agreements — Gilad et al.', 'https://eprint.iacr.org/2017/454.pdf', 2017)], related: ['proof-of-stake', 'ouroboros', 'pbft'],
   },
   {
     id: 'narwhal', title: bi('Narwhal', 'Narwhal'), hook: bi('Share the data before deciding its order.', 'Sırayı belirlemeden önce veriyi paylaş.'),
@@ -64,7 +64,7 @@ export const advancedLessons: Lesson[] = [
     takeaway: bi('Any three valid shards recover these three data symbols.', 'Geçerli herhangi üç parça bu üç veri simgesini geri getirir.'),
     model: bi('An actual (6,3) evaluation code over the prime field GF(257), with Lagrange interpolation of polynomial coefficients. This uses small integers for visibility, not the byte field of RFC 5510. Erasures are known; undetected corruption is not corrected.', 'GF(257) asal cismi üzerinde gerçek (6,3) değerlendirme kodu; polinom katsayıları Lagrange enterpolasyonuyla bulunur. Görünürlük için küçük tamsayılar kullanılır; RFC 5510’un bayt cismi değildir. Kayıp yerleri bilinir; fark edilmeyen bozulmalar düzeltilmez.'),
     challenge: { question: bi('Four of six shards vanish. Can this code uniquely recover three symbols?', 'Altı parçanın dördü kayboldu. Üç simge tekil olarak geri gelir mi?'), options: [bi('Yes', 'Evet'), bi('No, only two remain', 'Hayır, yalnız iki parça kaldı')], correct: 1, explanation: bi('A degree-two polynomial needs three distinct valid evaluation points.', 'İkinci derece polinom için üç farklı geçerli değerlendirme noktası gerekir.') },
-    sources: [source('Polynomial Codes Over Certain Finite Fields — Reed & Solomon', 'https://epubs.siam.org/doi/10.1137/0108018', 1960), source('RFC 5510: Reed–Solomon FEC', 'https://datatracker.ietf.org/doc/html/rfc5510', 2009)], related: ['data-availability', 'shamir', 'replication'],
+    sources: [source('Polynomial Codes Over Certain Finite Fields — Reed & Solomon', 'https://epubs.siam.org/doi/10.1137/0108018', 1960), source('RFC 5510: Reed–Solomon FEC', 'https://datatracker.ietf.org/doc/html/rfc5510', 2009)], related: ['data-availability', 'kzg', 'replicated-log'],
   },
   {
     id: 'data-availability', title: bi('Data availability sampling', 'Veri erişilebilirliği örneklemesi'), hook: bi('Check the data without downloading it all.', 'Hepsini indirmeden veriyi sınayabilir misin?'),
@@ -136,7 +136,7 @@ export const advancedLessons: Lesson[] = [
     takeaway: bi('Commit the output and the input offset together.', 'Çıktıyı ve giriş ofsetini birlikte kalıcılaştır.'),
     model: bi('One input and one output, durable offsets, a single crash, and one restart. Atomic mode stages output and offset in one transaction with committed-only reads. This models coordinated log-to-log effects; arbitrary external side effects need their own cooperation.', 'Tek giriş ve çıktı, kalıcı ofset, tek çökme ve yeniden başlatma. Atomik yöntemde çıktı ve ofset aynı işlemde hazırlanır; yalnız kabul edilmiş veriler okunur. Eşgüdümlü günlükler arası etkiler gösterilir; dış sistem etkileri ayrıca işbirliği gerektirir.'),
     challenge: { question: bi('Output is durable, offset is not. What can a restart do?', 'Çıktı kalıcı, ofset değil. Yeniden başlatma ne yapabilir?'), options: [bi('Repeat the output', 'Çıktıyı tekrarlayabilir'), bi('Prove nothing was processed', 'Hiçbir şey işlenmediğini kanıtlar')], correct: 0, explanation: bi('The consumer resumes from its old offset and may process the same input again.', 'Tüketici eski ofsetten sürer ve aynı girdiyi yeniden işleyebilir.') },
-    sources: [kafka], related: ['replicated-log', 'two-phase-commit', 'idempotency'],
+    sources: [kafka], related: ['replicated-log', 'two-phase-commit', 'linearizability'],
   },
   {
     id: 'bloom-filter', title: bi('Bloom filter', 'Bloom filtresi'), hook: bi('Definitely absent. Only possibly present.', 'Kesinlikle yok. Belki var.'),
@@ -145,7 +145,7 @@ export const advancedLessons: Lesson[] = [
     takeaway: bi('One zero proves absence. All ones only mean “maybe”.', 'Bir sıfır yokluğu kanıtlar. Tüm bitler birse yanıt “belki”dir.'),
     model: bi('A real bit array with three deterministic noncryptographic hashes and actual insertion/query logic. No deletions or concurrent updates. False positives can occur; correctly inserted items never produce false negatives.', 'Üç belirlenimci kriptografik olmayan hash ve gerçek ekleme/sorgulama mantığıyla bit dizisi. Silme veya eşzamanlı güncelleme yoktur. Yanlış pozitif olabilir; doğru eklenen öğede yanlış negatif olmaz.'),
     challenge: { question: bi('Every queried bit is 1. Is membership certain?', 'Sorgulanan her bit 1. Üyelik kesin mi?'), options: [bi('Yes', 'Evet'), bi('No, another word may share those bits', 'Hayır, başka sözcük aynı bitleri paylaşabilir')], correct: 1, explanation: bi('Hash collisions can make an absent word look present.', 'Hash çakışmaları olmayan bir sözcüğü varmış gibi gösterebilir.') },
-    sources: [source('Space/Time Trade-offs in Hash Coding — Bloom', 'https://www.cs.princeton.edu/courses/archive/spr05/cos598E/bib/p422-bloom.pdf', 1970)], related: ['hashing', 'erlay', 'merkle-tree'],
+    sources: [source('Space/Time Trade-offs in Hash Coding — Bloom', 'https://www.cs.princeton.edu/courses/archive/spr05/cos598E/bib/p422-bloom.pdf', 1970)], related: ['sha256', 'erlay', 'merkle-tree'],
   },
   {
     id: 'rendezvous', title: bi('Rendezvous hashing', 'Rendezvous hashleme'), hook: bi('A server leaves. Move only what must move.', 'Bir sunucu gitti. Yalnız gerekeni taşı.'),
@@ -163,7 +163,7 @@ export const advancedLessons: Lesson[] = [
     takeaway: bi('Each square depends on the last; a proof checks the final relation.', 'Her kare önceki sonuca bağlıdır; kanıt son bağıntıyı denetler.'),
     model: bi('Real repeated squaring and the Wesolowski relation π^ℓ · x^r = y mod N, with N=77 and fixed ℓ=13. These tiny, factorable parameters and the fixed challenge are deliberately insecure. This is arithmetic intuition, not a secure VDF, trusted timer or production proof generator.', 'Gerçek ardışık kare alma ve Wesolowski bağıntısı: π^ℓ · x^r = y mod N; N=77 ve sabit ℓ=13. Küçük, çarpanlarına ayrılabilir parametreler ve sabit sorgu bilerek güvensizdir. Bu aritmetik sezgisidir; güvenli VDF, güvenilir zamanlayıcı veya üretim kanıtı değildir.'),
     challenge: { question: bi('Does this small-number demo enforce a secure real-world delay?', 'Bu küçük sayılı örnek gerçek dünyada güvenli gecikme zorlar mı?'), options: [bi('Yes', 'Evet'), bi('No, the parameters are insecure', 'Hayır, parametreler güvensiz')], correct: 1, explanation: bi('The proof equation is real, but secure sequentiality needs suitable groups and parameters.', 'Kanıt denklemi gerçektir; güvenli ardışıklık uygun gruplar ve parametreler ister.') },
-    sources: [source('Efficient verifiable delay functions — Wesolowski', 'https://eprint.iacr.org/2018/623', 2018)], related: ['hashing', 'proof-of-work', 'vrf'],
+    sources: [source('Efficient verifiable delay functions — Wesolowski', 'https://eprint.iacr.org/2018/623', 2018)], related: ['sha256', 'proof-of-work', 'ouroboros'],
   },
   {
     id: 'modular-execution', title: bi('Modular execution', 'Modüler yürütme'), hook: bi('Share the data. Run only your application.', 'Veriyi paylaş. Yalnız kendi uygulamanı çalıştır.'),
@@ -172,6 +172,6 @@ export const advancedLessons: Lesson[] = [
     takeaway: bi('Available bytes and valid application transitions are different checks.', 'Erişilebilir baytlar ve geçerli uygulama geçişleri ayrı denetimlerdir.'),
     model: bi('A shared ordered data layer and two independent application interpreters. A has a balance with insufficient-funds rejection; B increments a counter. Missing required A data prevents replay past that gap. Consensus, cross-application messages and proofs are assumed or omitted.', 'Ortak sıralı veri katmanı ve iki bağımsız uygulama yorumlayıcısı. A’da yetersiz bakiye reddi; B’de sayaç artışı vardır. Gerekli A verisi eksikse boşluk sonrasına yürütme yapılamaz. Uzlaşma, uygulamalar arası mesajlar ve kanıtlar varsayılır veya gösterilmez.'),
     challenge: { question: bi('A transfer’s bytes are available, but its balance is insufficient. Accept it?', 'Transferin baytları erişilebilir ama bakiye yetersiz. Kabul edilir mi?'), options: [bi('Yes, availability is enough', 'Evet, erişilebilirlik yeter'), bi('No, the application rejects it', 'Hayır, uygulama reddeder')], correct: 1, explanation: bi('The data layer can carry bytes whose execution an application considers invalid.', 'Veri katmanı, yürütülmesini uygulamanın geçersiz bulduğu baytları taşıyabilir.') },
-    sources: [lazy], related: ['data-availability', 'optimistic-rollup', 'zk-rollup'],
+    sources: [lazy], related: ['data-availability', 'optimistic-rollup', 'validity-rollup'],
   },
 ];

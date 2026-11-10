@@ -32,10 +32,12 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        id: dependencies
         run: npm ci
 
       - name: Run tests
         run: npm test
 
       - name: Build production site
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: npm run build
