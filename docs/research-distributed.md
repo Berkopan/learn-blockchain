@@ -439,7 +439,7 @@ The snapshot conserves 16 units across recorded local balances and the B→A cha
 
 **Prediction:** Two participants vote yes, one votes no. Can the transaction commit? **Answer:** No; commit requires all yes. Atomic commit is not a majority vote over whether every participant can commit.
 
-**Primary sources:** [Gray & Lamport — Consensus on Transaction Commit](https://lamport.azurewebsites.net/pubs/transaction-commit.pdf).
+**Primary sources:** [Gray & Lamport — Consensus on Transaction Commit](https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf).
 
 ### Three-phase commit / Üç aşamalı commit
 
@@ -455,7 +455,7 @@ The snapshot conserves 16 units across recorded local balances and the B→A cha
 
 **Prediction:** Does 3PC remove blocking under arbitrary partitions? **Answer:** No. Its recovery argument depends on stronger timing and connectivity assumptions.
 
-**Primary sources:** [Skeen — Nonblocking Commit Protocols](https://doi.org/10.1145/582318.582339); [Gray & Lamport — Consensus on Transaction Commit](https://lamport.azurewebsites.net/pubs/transaction-commit.pdf).
+**Primary sources:** [Skeen — Nonblocking Commit Protocols](https://doi.org/10.1145/582318.582339); [Gray & Lamport — Consensus on Transaction Commit](https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf).
 
 ### G-counter CRDT / G-counter CRDT
 
@@ -535,7 +535,7 @@ The snapshot conserves 16 units across recorded local balances and the B→A cha
 
 **Prediction:** Can a disconnected replica always return the latest completed write without waiting? **Answer:** No. It cannot learn a remote write through a link that delivers no messages.
 
-**Primary sources:** [Gilbert & Lynch — Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](https://groups.csail.mit.edu/tds/papers/Gilbert/Brewer2.pdf).
+**Primary sources:** [Gilbert & Lynch — Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](https://groups.csail.mit.edu/tds/papers/Gilbert/Brewer6.pdf).
 
 ### FLP impossibility / FLP imkânsızlığı
 
@@ -607,10 +607,10 @@ The domain tests check behavior that can be wrong even when a scene renders succ
 - [Maymounkov & Mazières — Kademlia](https://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf) (2002).
 - [DeCandia et al. — Dynamo: Amazon's Highly Available Key-value Store](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) (2007).
 - [Gifford — Weighted Voting for Replicated Data](https://www.cs.cmu.edu/~dga/15-712/F11/papers/gifford79.pdf) (1979).
-- [Gray & Lamport — Consensus on Transaction Commit](https://lamport.azurewebsites.net/pubs/transaction-commit.pdf) (2006).
+- [Gray & Lamport — Consensus on Transaction Commit](https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf) (2006).
 - [Skeen — Nonblocking Commit Protocols](https://doi.org/10.1145/582318.582339) (1981).
 - [Shapiro et al. — A Comprehensive Study of Convergent and Commutative Replicated Data Types](https://inria.hal.science/inria-00555588/document) (2011).
-- [Gilbert & Lynch — Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](https://groups.csail.mit.edu/tds/papers/Gilbert/Brewer2.pdf) (2002).
+- [Gilbert & Lynch — Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](https://groups.csail.mit.edu/tds/papers/Gilbert/Brewer6.pdf) (2002).
 - [Fischer, Lynch & Paterson — Impossibility of Distributed Consensus with One Faulty Process](https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf) (1985).
 - [Herlihy & Wing — Linearizability: A Correctness Condition for Concurrent Objects](https://cs.brown.edu/~mph/HerlihyW90/p463-herlihy.pdf) (1990).
 

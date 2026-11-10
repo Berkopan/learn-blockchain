@@ -2228,7 +2228,7 @@ export const distributedLessons: Lesson[] = [
     "sources": [
       {
         "title": "Gray & Lamport — Consensus on Transaction Commit",
-        "url": "https://lamport.azurewebsites.net/pubs/transaction-commit.pdf",
+        "url": "https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf",
         "year": 2006
       }
     ],
@@ -2336,7 +2336,7 @@ export const distributedLessons: Lesson[] = [
       },
       {
         "title": "Gray & Lamport — Consensus on Transaction Commit",
-        "url": "https://lamport.azurewebsites.net/pubs/transaction-commit.pdf",
+        "url": "https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf",
         "year": 2006
       }
     ],
@@ -2775,7 +2775,7 @@ export const distributedLessons: Lesson[] = [
     "sources": [
       {
         "title": "Gilbert & Lynch — Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services",
-        "url": "https://groups.csail.mit.edu/tds/papers/Gilbert/Brewer2.pdf",
+        "url": "https://groups.csail.mit.edu/tds/papers/Gilbert/Brewer6.pdf",
         "year": 2002
       }
     ],

@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { distributedLessons } from '../src/content/distributed';
 import { defaultsFor, type Params } from '../src/types';
-import { KADEMLIA_IDS, canCausalDeliver, chordRoute, chordSuccessor, consistentOwner, contiguousPrefix, gValue, inheritAccepted, kademliaLookup, lamportReceive, linearizeRegister, mergeLWW, mergeOR, mergePN, mergeVector, merkleDifferences, orPresent, paxosOutcome, pnValue, quorumIntersection, raftOutcome, readRepairState, requestOrder, ringElection, selectViewLog, simulateDistributed, snapshotMoney, terminationState, threePCOutcome, twoPCOutcome, vectorReceive, vectorRelation } from '../src/simulation/distributed';
+import { KADEMLIA_IDS, canCausalDeliver, chordRoute, chordSuccessor, consistentOwner, contiguousPrefix, gValue, inheritAccepted, kademliaLookup, lamportReceive, linearizeRegister, logAtLeastAsFresh, mergeLWW, mergeOR, mergePN, mergeVector, merkleDifferences, orPresent, paxosOutcome, pnValue, quorumIntersection, raftOutcome, readRepairState, requestOrder, ringElection, selectViewLog, simulateDistributed, snapshotMoney, terminationState, threePCOutcome, twoPCOutcome, vectorReceive, vectorRelation } from '../src/simulation/distributed';
 
 describe('Consensus invariants', () => {
   it('Raft counts a current-term majority and rejects a stale candidate', () => {
+    expect(logAtLeastAsFresh(1, 99, 2, 2)).toBe(false);
+    expect(logAtLeastAsFresh(2, 1, 2, 2)).toBe(false);
+    expect(logAtLeastAsFresh(2, 2, 2, 2)).toBe(true);
+    expect(logAtLeastAsFresh(3, 1, 2, 99)).toBe(true);
     for (let offline = 0; offline <= 3; offline++) {
       const fresh = raftOutcome(offline, false, true);
       expect(fresh.elected).toBe(5 - offline >= 3);
@@ -261,5 +265,31 @@ describe('Distributed teaching traces', () => {
         expect(visual({ ...defaults, [control.id]:alternative }), lesson.id + '/' + control.id).not.toBe(visual(defaults));
       }
     }
+  });
+});
+
+describe('Persistent scene state', () => {
+  it('keeps promises, decisions, knowledge, incarnation and token ownership in later frames', () => {
+    const trace = (id: string, params: Params) => simulateDistributed(id, params)!;
+    const value = (id: string, params: Params, node: string) => trace(id, params).frames.at(-1)!.nodes.find(n => n.id === node)?.value;
+    expect(value('paxos', { oldAccepted:true, ballot:3, unavailable:0 }, 'a0')).toBe('p3 · 3:A');
+    expect(value('paxos', { oldAccepted:true, ballot:3, unavailable:2 }, 'a0')).toBe('p3 · 2:A');
+    for (const phase of ['wait', 'precommit']) {
+      const final = trace('three-phase-commit', { phase, crash:true, partition:false }).frames.at(-1)!;
+      expect(final.nodes.every(n => n.value === (phase === 'wait' ? 'A' : 'C'))).toBe(true);
+    }
+    const flp = trace('flp', { crashed:true, deliver:true });
+    for (const scene of flp.frames.slice(3)) {
+      expect(scene.nodes.find(n => n.id === 'A')?.value).toBe('0');
+      expect(scene.nodes.find(n => n.id === 'C')?.status).toBe('error');
+    }
+    expect(value('swim', { crash:false, delay:true, indirect:false }, 'B')).toBe('i=2');
+    const token = trace('suzuki-kasami', { requester:'B', tokenLost:false });
+    for (const scene of token.frames.slice(3)) expect(scene.nodes.find(n => n.id === 'token')?.position).toEqual([0,0,-1]);
+    expect(value('zab', { crash:true, followers:2, catchup:true }, 'C')).toBe('1:1');
+    expect(value('viewstamped-replication', { leaderFail:true, backups:2, staleTail:true }, 'B')).toBe('v=2');
+    const lookup = trace('kademlia', { target:10, alpha:2, failed:true });
+    for (const scene of lookup.frames.slice(1)) expect(scene.nodes.find(n => n.id === 'n8')?.status).toBe('error');
+    expect(value('cap', { mode:'cp', partition:false }, 'R')).toBe('1');
   });
 });
