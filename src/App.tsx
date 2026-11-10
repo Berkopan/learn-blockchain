@@ -11,7 +11,7 @@ function readRoute(){const raw=window.location.hash.slice(1)||'/';const[path,sea
 class ErrorBoundary extends Component<{children:ReactNode;language:Language},{failed:boolean}>{
  state={failed:false};static getDerivedStateFromError(){return{failed:true};}
  componentDidCatch(error:Error,info:ErrorInfo){console.error('Block Atlas scene error',error,info.componentStack);}
- render(){const l=this.props.language;if(this.state.failed)return <main className="error-page"><BookOpen size={36}/><h1>{t(l,'errorTitle')}</h1><p>{t(l,'errorText')}</p><button className="button dark" onClick={()=>window.location.reload()}>{t(l,'reload')}<RotateCcw size={16}/></button><a href={homeUrl(l)} onClick={()=>this.setState({failed:false})}>{t(l,'back')}</a></main>;return this.props.children;}
+ render(){const l=this.props.language;if(this.state.failed)return <main id="main-content" tabIndex={-1} className="error-page"><BookOpen size={36}/><h1>{t(l,'errorTitle')}</h1><p>{t(l,'errorText')}</p><button className="button dark" onClick={()=>window.location.reload()}>{t(l,'reload')}<RotateCcw size={16}/></button><a href={homeUrl(l)} onClick={()=>this.setState({failed:false})}>{t(l,'back')}</a></main>;return this.props.children;}
 }
 export default function App(){
  const[preferences,setPreferences]=useState(loadPreferences),[route,setRoute]=useState(readRoute),[about,setAbout]=useState(false),[undo,setUndo]=useState<string[]|null>(null);

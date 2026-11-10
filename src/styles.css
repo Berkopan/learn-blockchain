@@ -66,3 +66,5 @@
   .lesson-meta{font-size:9px}.card-category{font-size:8px}.lab-source-actions .quiet-button{font-size:10px}
  }
 }
+
+@layer responsive { html.reduced-motion { scroll-behavior: auto !important; } }

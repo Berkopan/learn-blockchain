@@ -116,6 +116,7 @@ export default function Scene(props:Props){
   return()=>{api.current=null;cancelAnimationFrame(raf);observer.disconnect();intersection.disconnect();controls.dispose();canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointerup',up);canvas.removeEventListener('webglcontextlost',contextLost);release(scene);renderer.dispose();canvas.remove();};
  },[flat,props.hero]);
  useEffect(()=>{api.current?.update(props.frame);},[props.frame]);
+ useEffect(()=>{host.current?.querySelector('canvas')?.setAttribute('aria-label',props.language==='tr'?'Etkileşimli 3D sahne':'Interactive 3D scene');},[props.language,flat,unavailable]);
  const reset=()=>{api.current?.reset();setResetKey(n=>n+1);};
  return <div className={'three-stage '+(props.hero?'hero-stage':'')}>
   <div ref={host} className="canvas-mount" style={{display:flat||unavailable?'none':undefined}}/>
